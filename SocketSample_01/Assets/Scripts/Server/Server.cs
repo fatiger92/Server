@@ -11,7 +11,7 @@ public class Server : MonoBehaviour
     private List<ServerClient> clients;
     private List<ServerClient> disconnectList;
 
-    public int port = 6325;
+    public int port = 35000;
     private TcpListener server;
     private bool serverStarted;
 
@@ -27,7 +27,7 @@ public class Server : MonoBehaviour
 
             StartListening();
             serverStarted = true;
-            Debug.Log(" Server has been started on port " + port.ToString());
+            Debug.Log($" Server has been started on port :: {port.ToString()} address ::{server.LocalEndpoint}");
         }
         catch (Exception e)
         {

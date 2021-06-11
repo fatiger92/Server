@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,8 +26,8 @@ public class Client : MonoBehaviour
         if (socketReady) return;
 
         // Defalut host / port values
-        string host = "127.0.0.1";
-        int port = 6325;
+        string host = "172.30.1.8";
+        int port = 35000;
 
         // Overwrite defalut host / port values, if there is something in those bosex
         string h;
@@ -40,6 +41,8 @@ public class Client : MonoBehaviour
         if (p != 0) 
             port = p;
 
+
+
         //Create the socket
         try
         {
@@ -48,6 +51,8 @@ public class Client : MonoBehaviour
             writer = new StreamWriter(stream);
             reader = new StreamReader(stream);
             socketReady = true;
+
+            Debug.Log($"host :: {host} is connected!!");
         }
         catch (Exception e)
         {
