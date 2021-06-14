@@ -17,7 +17,6 @@ public class ServerManager : MonoBehaviour
     TcpListener server; // 리스너 소켓
     bool serverStarted; // 서버가 시작되었는지 아닌지 판단 bool 변수
 
-
     public void ServerCreate() // 서버생성 메서드
     {
         clients = new List<ServerClient>(); // 연결된 클라이언트들 관리 리스트 초기화
@@ -61,7 +60,9 @@ public class ServerManager : MonoBehaviour
             // 클라이언트로부터 체크 메시지를 받는다
             else
             {
-                NetworkStream stream = cl.tcp.GetStream(); // 네트워크에서 데이터흐름을 담당함.
+                // 네트워크에서 데이터흐름을 담당함.
+                // TCP 네트워크 스트림을 리턴한다.
+                NetworkStream stream = cl.tcp.GetStream(); 
 
                 if (stream.DataAvailable)
                 {
@@ -91,7 +92,7 @@ public class ServerManager : MonoBehaviour
             {
                 // Poll() 메소드는 간단한 boolean 값을 반환하는데, 수행하고자 하는 행동이 블록을 걸지 않고 완료할 수 있으면, true를, 블록을 걸면 false를 반환하다.
                 // int 파라미터는 Poll() 메소드가 특정 이벤트에 대해서 소켓을 주시하는 시간을 microseconds 단위로 나타낸 것이다. SelectMode 파라미터는 주시해야 할 행동을 나타낸다.
-
+                
                 // 여기 if문이 없으면 데이터 전송이 안됨..
                 // SelectMode 클래스의 SelectRead 값을 사용할 경우, 다음과 같은 조건을 만족하면 Poll() 메소드가 true를 반환
                 // Accept() 메소드가 성공, 소켓에 읽어들일 데이터가 있을 때, 연결이 종료되었을 떄
@@ -157,7 +158,7 @@ public class ServerManager : MonoBehaviour
             client.clientName = data.Split('|')[1];
 
             Broadcast($"{client.clientName}이 연결되었습니다", clients);
-            
+
             return;
         }
 
@@ -170,9 +171,9 @@ public class ServerManager : MonoBehaviour
         {
             try
             {
-                StreamWriter writer = new StreamWriter(cl.tcp.GetStream());
-                writer.WriteLine(data);
-                writer.Flush();
+                StreamWriter writer = new StreamWriter(cl.tcp.GetStream()); // 클라이언트 하나당 Writer, Reader가 존재한다고 보면됨.
+                writer.WriteLine(data); // 들어온 매개변수 data를 각각의 client 들에게 writer를 통해 써준다.
+                writer.Flush(); // writer 비우기
             }
             catch (Exception e)
             {

@@ -61,6 +61,7 @@ public class Client : MonoBehaviour
 			Send($"&NAME|{clientName}");
 			return;
 		}
+
 		ChatManager.instance.ShowMessage(data);
 	}
 

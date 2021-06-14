@@ -54,7 +54,6 @@ public class LineManager : MonoBehaviour
                     m_curLine.material = m_defaultMat;
                     m_curLine.material.SetColor("_Color", Color.black);
 
-
                     m_lineRenderObjs.Add(temp);
                     m_numClicks = 0;
                 }
@@ -66,6 +65,8 @@ public class LineManager : MonoBehaviour
                     m_curLine.SetPosition(m_numClicks, linePos);
 
                     m_numClicks++;
+
+                    Debug.LogFormat($"라인 포지션 :: {linePos}");
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
