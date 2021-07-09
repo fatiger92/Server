@@ -1,0 +1,119 @@
+{
+    "m_SelectedDeviceId": "216357d13b037ece",
+    "m_SelectedPackage": {
+        "deviceId": "216357d13b037ece",
+        "name": "com.DefaultCompany.SocketSample_03",
+        "processId": 11076,
+        "exited": false
+    },
+    "m_SelectedPriority": 0,
+    "m_KnownPackagesForSerialization": [
+        {
+            "deviceId": "defc507c",
+            "name": "com.DefaultCompany.SocketSample_03",
+            "processId": 5096,
+            "exited": true
+        },
+        {
+            "deviceId": "defc507c",
+            "name": "com.DefaultCompany.SocketSample_03",
+            "processId": 6988,
+            "exited": true
+        },
+        {
+            "deviceId": "defc507c",
+            "name": "com.DefaultCompany.SocketSample_03",
+            "processId": 8074,
+            "exited": true
+        },
+        {
+            "deviceId": "defc507c",
+            "name": "com.DefaultCompany.SocketSample_03",
+            "processId": 9370,
+            "exited": true
+        },
+        {
+            "deviceId": "defc507c",
+            "name": "com.DefaultCompany.SocketSample_03",
+            "processId": 10036,
+            "exited": true
+        },
+        {
+            "deviceId": "R39M403LTBT",
+            "name": "com.DefaultCompany.SocketSample_03",
+            "processId": 24270,
+            "exited": true
+        },
+        {
+            "deviceId": "216357d13b037ece",
+            "name": "com.DefaultCompany.SocketSample_03",
+            "processId": 5511,
+            "exited": false
+        },
+        {
+            "deviceId": "216357d13b037ece",
+            "name": "com.DefaultCompany.SocketSample_03",
+            "processId": 8280,
+            "exited": false
+        },
+        {
+            "deviceId": "216357d13b037ece",
+            "name": "com.DefaultCompany.SocketSample_03",
+            "processId": 11076,
+            "exited": false
+        }
+    ],
+    "m_Tags": {
+        "m_Entries": [
+            {
+                "m_Name": "Filter by all listed tags",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "No Filter",
+                "m_Selected": true
+            },
+            {
+                "m_Name": "",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "Tag Control...",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "Unity",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "CRASH",
+                "m_Selected": false
+            }
+        ]
+    },
+    "m_MemoryViewerState": {
+        "MemoryWindowHeight": 300.0,
+        "MemoryWindowWidth": 170.0,
+        "MemoryTypeEnabled": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        ],
+        "MemoryGroup": 2,
+        "Behavior": 0
+    },
+    "m_Filter": "",
+    "m_FilterIsRegularExpression": false,
+    "m_SymbolPaths": []
+}

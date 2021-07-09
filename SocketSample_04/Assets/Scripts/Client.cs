@@ -4,13 +4,9 @@ using UnityEngine;
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Linq;
 
 public class Client : MonoBehaviour
 {
-    static public Client Instance;
-    void Awake() => Instance = this;
-
     //local IP
     public string serverIp = "172.30.1.8";
     public Material test_material;
@@ -19,7 +15,8 @@ public class Client : MonoBehaviour
     private Socket clientSocket = null;
 
     SimplePacket newPacket = null; // test
-    List<float[]> testLines = null;
+    List<float> testLines = null;
+    float templine;
 
     // Start is called before the first frame update
     void Start() { }
@@ -27,7 +24,7 @@ public class Client : MonoBehaviour
     public void ConnectToServer()
     {
         //클라이언트에서 사용할 소켓 준비
-        this.clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         //클라이언트는 바인딩할 필요 없음
 
@@ -39,7 +36,7 @@ public class Client : MonoBehaviour
         try
         {
             Debug.Log("Connecting to Server");
-            this.clientSocket.Connect(serverEndPoint);
+            clientSocket.Connect(serverEndPoint);
         }
         catch (SocketException e)
         {
@@ -49,38 +46,25 @@ public class Client : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        if (this.clientSocket != null)
+        if (clientSocket != null)
         {
-            this.clientSocket.Close();
-            this.clientSocket = null;
+            clientSocket.Close();
+            clientSocket = null;
         }
     }
 
-    public static void Send(SimplePacket packet)
+    public void Send(SimplePacket packet)
     {
-        if (Client.Instance.clientSocket == null) return;
+        print("입구");
 
-        byte[] sendData = SimplePacket.ToByteArray(packet);
+        if (clientSocket == null) return;
+
+        print("못넘는다.");
+        byte[] sendData = SimplePacket.ToByteArraySerialize(packet);
         byte[] prefSize = new byte[1];
         prefSize[0] = (byte)sendData.Length;    //버퍼의 가장 앞부분에 이 버퍼의 길이에 대한 정보가 있는데 이것을 먼저 보낸다.
-        Client.Instance.clientSocket.Send(prefSize);
-        Client.Instance.clientSocket.Send(sendData);
-
-        Debug.Log("Send Packet from Client :" + packet.mouseLinePosList.ToString());
-
-        //for (int i = 0; i < packet.mouseLinePosList.Count; i++)
-        //{
-        //    print($"data[i] :: {packet.mouseLinePosList[i].ToString()}");
-
-        //    for (int j = 0; j < packet.mouseLinePosList[i].Length; j++)
-        //    {
-        //        print($"packet.mouseLinePosList[i] :: {packet.mouseLinePosList[j].ToString()}");
-        //    }  
-        //}
-
-
-
-        print($"packet.mouseLinePosList.Count :: {packet.mouseLinePosList.Count}");
+        clientSocket.Send(prefSize);
+        clientSocket.Send(sendData);
     }
 
     // Update is called once per frame
@@ -100,12 +84,12 @@ public class Client : MonoBehaviour
         //}
         #endregion
 
-        //마우스 왼쪽 클리할 때마다 패킷 클래스를 이용해서 위치정보를 서버에 전송.
+        //마우스 왼쪽 클릭할 때마다 패킷 클래스를 이용해서 위치정보를 서버에 전송.
         if (Input.GetMouseButtonDown(0))
         {
             print("한번만");
             newPacket = new SimplePacket();
-            testLines = new List<float[]>();
+            testLines = new List<float>();
         }
         //마우스를 클릭 후 계속 위치정보 서버에 전송 그리고 마우스 버튼 뗄 시에 배열자체를 보냄
         else if (Input.GetMouseButton(0))
@@ -115,21 +99,22 @@ public class Client : MonoBehaviour
             //print($"마우스 포지션 x :: {Input.mousePosition.x}, 마우스 포지션 y :: {Input.mousePosition.y}");
             //print($"Client :: 가공된 라인 포지션 {linePos}");
 
-            float[] arrLines = new float[3];
-            arrLines[0] = linePos.x;
-            arrLines[1] = linePos.y;
-            arrLines[2] = linePos.z;
+            //float[] arrLines = new float[3];
+            //arrLines[0] = linePos.x;
+            //arrLines[1] = linePos.y;
+            //arrLines[2] = linePos.z;
 
-            testLines.Add(arrLines);
+            templine = linePos.x;
+            testLines.Add(templine);
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            newPacket.mouseLinePosList = testLines;
+            newPacket.receive_list.data = testLines;
             //여기까지 잘들어오는 것 확인
 
             Send(newPacket);
 
-            testLines.Clear();
+            //testLines.Clear();
         }
     }
 }

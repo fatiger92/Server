@@ -25,31 +25,28 @@ public class Server : MonoBehaviour
     private void Start()
     {
         Debug.Log("Server Start");
-        this.serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint ipLocal = new IPEndPoint(IPAddress.Any, PortNumb);
         print($"Server IP :: {ipLocal.Address}");
         //바인딩
-        this.serverSocket.Bind(ipLocal);    //클라이언트로부터 받은 소켓을 로컬의 엔드포인트로 연결 하겠다.
+        serverSocket.Bind(ipLocal);    //클라이언트로부터 받은 소켓을 로컬의 엔드포인트로 연결 하겠다.
         //리스닝
         Debug.Log("Start Listening..");
-        this.serverSocket.Listen(100);  // backlog : 클라이언트의 최대 수
+        serverSocket.Listen(100);  // backlog : 클라이언트의 최대 수
     }
 
     void SocketClose()
     {
         //서버닫기
-        if (this.serverSocket != null)
-        {
-            this.serverSocket.Close();
-        }
-        this.serverSocket = null;
+        if (serverSocket != null) serverSocket.Close();
+        serverSocket = null;
 
         //클라이언트 끊기
-        foreach (Socket client in this.Connections)
+        foreach (Socket client in Connections)
         {
             client.Close();
         }
-        this.Connections.Clear();
+        Connections.Clear();
     }
 
     private void OnApplicationQuit()
@@ -61,7 +58,7 @@ public class Server : MonoBehaviour
     private void Update()
     {
         ArrayList listenList = new ArrayList();
-        listenList.Add(this.serverSocket);
+        listenList.Add(serverSocket);
 
         Socket.Select(listenList, null, null, 1000);
 
@@ -72,31 +69,35 @@ public class Server : MonoBehaviour
             //Accept
             Socket newConnection = ((Socket)listenList[i]).Accept();
             //클라이언트 소켓을 저장
-            this.Connections.Add(newConnection);
+            Connections.Add(newConnection);
             //바이트 버퍼 저장
-            this.ByteBuffers.Add(new ArrayList());
+            ByteBuffers.Add(new ArrayList());
             Debug.Log("New Client Connected");
         }
 
         //서버와 연결된 클라이언트들이 하나라도 있다면
         if (Connections.Count != 0)
         {
-            ArrayList cloneConnections = new ArrayList(this.Connections);
+            ArrayList cloneConnections = new ArrayList(Connections);
             Socket.Select(cloneConnections, null, null, 1000);
             foreach (Socket client in cloneConnections)
             {
-                byte[] receivedBytes = new byte[512];
-                ArrayList buffer = (ArrayList)this.ByteBuffers[cloneConnections.IndexOf(client)];
+                byte[] receivedBytes = new byte[10000];
+                ArrayList buffer = (ArrayList)ByteBuffers[cloneConnections.IndexOf(client)];
 
                 //클라이언트로부터 전송된 데이터 담기
                 int read = client.Receive(receivedBytes);
+
                 for (int i = 0; i < read; i++)
+                {
                     buffer.Add(receivedBytes[i]);
+                }
 
                 while (buffer.Count > 0)
                 {
                     //패킷의 첫번째의 정보는 전체 데이터의 크기임 그걸 가져옴.
                     int packetDataLength = (byte)buffer[0];
+
                     if (packetDataLength < buffer.Count)
                     {
                         ArrayList thisPacketBytes = new ArrayList(buffer);
@@ -108,14 +109,13 @@ public class Server : MonoBehaviour
 
                         byte[] readBytes = (byte[])thisPacketBytes.ToArray(typeof(byte));
 
-                        SimplePacket readpacket = SimplePacket.FromByteArray(readBytes);
-                        this.Buffer.Add(readpacket);
+                        SimplePacket readpacket = SimplePacket.FromByteArrayDeserialize(readBytes);
+                        Buffer.Add(readpacket);
 
                         //Debug.LogWarning("Packet Receive From Client IP :[" + client.RemoteEndPoint.ToString() + "]"
                         //    + readpacket.mouseLinePosList.ToString());
 
-                            Debug.LogFormat($"Server :: 가공한 좌표 카운트 :: {readpacket.mouseLinePosList}");
-
+                        Debug.LogFormat($"Server :: 받은 좌표  :: {readpacket.receive_list}");
                     }
                     else break;
                 }

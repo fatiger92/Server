@@ -1,9 +1,9 @@
 {
-    "m_SelectedDeviceId": "216357d13b037ece",
+    "m_SelectedDeviceId": "defc507c",
     "m_SelectedPackage": {
-        "deviceId": "",
-        "name": "",
-        "processId": 0,
+        "deviceId": "defc507c",
+        "name": "com.DefaultCompany.SocketSample_01",
+        "processId": 7175,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -42,6 +42,18 @@
             "deviceId": "216357d13b037ece",
             "name": "com.DefaultCompany.SocketSample_01",
             "processId": 2029,
+            "exited": false
+        },
+        {
+            "deviceId": "defc507c",
+            "name": "com.DefaultCompany.SocketSample_01",
+            "processId": 6579,
+            "exited": false
+        },
+        {
+            "deviceId": "defc507c",
+            "name": "com.DefaultCompany.SocketSample_01",
+            "processId": 7175,
             "exited": false
         }
     ],

@@ -17,14 +17,19 @@ public class Client : MonoBehaviour
 	StreamWriter writer; // 파일 쓰는 놈
 	StreamReader reader; // 파일 읽는 놈
 
-	public void ConnectToServer() // 클라이언트로 접속 클릭시 실행되는 메서드
+    private void Start()
+    {
+		LineManager.Instance.OnSend = (data) => Send(data);
+	}
+
+    public void ConnectToServer() // 클라이언트로 접속 클릭시 실행되는 메서드
 	{
 		// 이미 연결되었다면 함수 무시
 		if (socketReady) return;
 
 		// 기본 호스트 / 포트번호
-		string ip = IPInput.text == "" ? "192.168.1.101" : IPInput.text;
-		int port = PortInput.text == "" ? 35000 : int.Parse(PortInput.text);
+		string ip = IPInput.text == "" ? "192.168.1.37" : IPInput.text.ToString();
+		int port = PortInput.text == "" ? 35000 : int.Parse(PortInput.text.ToString());
 
 		// 소켓 생성
 		try
@@ -55,14 +60,39 @@ public class Client : MonoBehaviour
 	{
 		print($"Client :: OnIncomingData :: {data}");
 
-		if (data == "%NAME")
+		if (data.Contains("%NAME"))
 		{
 			clientName = NickInput.text == "" ? "Guest" + UnityEngine.Random.Range(1000, 10000) : NickInput.text;
 			Send($"&NAME|{clientName}");
 			return;
 		}
+		else if (data.Contains("%MESSAGE"))
+		{
+			string msg = data.Split('|')[1];
+			ChatManager.instance.ShowMessage(msg);
+			return;
+		}
+		else if (data.Contains("%POSITION"))
+		{
+			string jsonData = data.Split('|')[1];
+			LinePacket packet = JsonUtility.FromJson<LinePacket>(jsonData);
 
-		ChatManager.instance.ShowMessage(data);
+			print($"Client :: Json ::{ packet.receive_dataList.Count}");
+			LineManager.Instance.BuildLine(packet);
+			return;
+		}
+		else if (data.Contains("%UNDO"))
+		{
+			print("언도우");
+			LineManager.Instance.Undo();
+			return;
+		}
+		else if (data.Contains("%CLEAR"))
+		{
+			print("클리어");
+			LineManager.Instance.Clear();
+			return;
+		}
 	}
 
 	void Send(string data)
@@ -83,14 +113,7 @@ public class Client : MonoBehaviour
 
 		string message = SendInput.text;
 		SendInput.text = "";
-		Send(message);
-	}
-
-	public void OnCompleteDraw(string data)
-	{
-		//여기에서 딕셔너리나 무언가를 보내야함
-
-		if (data != null) Send(data);
+		Send($"&MESSAGE|{message}");
 	}
 
 	void OnApplicationQuit()
